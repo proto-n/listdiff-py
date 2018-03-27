@@ -29,7 +29,10 @@ ext_modules = [
             get_pybind_include(),
             get_pybind_include(user=True)
         ],
-        language='c++'
+        language='c++',
+        extra_compile_args=[
+            '-O2'
+        ]
     ),
 ]
 
