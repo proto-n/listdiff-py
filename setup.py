@@ -20,6 +20,17 @@ class get_pybind_include(object):
         return pybind11.get_include(self.user)
 
 
+def get_eigen_include():
+    import sys
+    conda_executable_name = sys.executable
+    conda_include_dir = ""
+    if conda_executable_name[-len("bin/python"):] == "bin/python":
+        conda_include_dir = conda_executable_name[:-len("bin/python")] + "include"
+    elif conda_executable_name[-len("python.exe"):] == "python.exe":
+        conda_include_dir = conda_executable_name[:-len("python.exe")] + "Library/include"
+    return conda_include_dir + "/eigen3"
+
+
 ext_modules = [
     Extension(
         'listdiff',
@@ -27,7 +38,8 @@ ext_modules = [
         include_dirs=[
             # Path to pybind11 headers
             get_pybind_include(),
-            get_pybind_include(user=True)
+            get_pybind_include(user=True),
+            get_eigen_include()
         ],
         language='c++',
         extra_compile_args=[
@@ -90,12 +102,13 @@ class BuildExt(build_ext):
             ext.extra_compile_args = opts
         build_ext.build_extensions(self)
 
+
 setup(
     name='listdiff',
     version=__version__,
     author='Domokos Kelen',
     author_email='kdomokos@gmail.com',
-    #url='https://github.com/pybind/python_example',
+    # url='https://github.com/pybind/python_example',
     description='A specialized tool',
     long_description='',
     ext_modules=ext_modules,
